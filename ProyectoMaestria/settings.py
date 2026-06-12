@@ -29,6 +29,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'bulb-onward-broker.ngrok-free.dev',
+    '20.104.81.49'
 ]
 
 CSRF_TRUSTED_ORIGINS = [
