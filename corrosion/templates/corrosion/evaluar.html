@@ -1,0 +1,429 @@
+{% extends "corrosion/base.html" %}
+{% block title %}Evaluación de Corrosión{% endblock %}
+{% block content %}
+
+<div class="row g-4">
+  <!-- ===== FORMULARIO ===== -->
+  <div class="col-lg-6 no-print">
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      <div class="card shadow-sm border-0 mb-3">
+        <div class="card-header card-header-tool">
+          <h5 class="mb-0"><i class="bi bi-card-checklist me-2"></i>Formulario de Evaluación</h5>
+        </div>
+        <div class="card-body">
+
+          {# Errors globales #}
+          {% if form.errors %}
+          <div class="alert alert-danger">
+            <strong>Por favor corrija los errores indicados:</strong>
+            {{ form.non_field_errors }}
+          </div>
+          {% endif %}
+
+          <!-- 1. IDENTIFICACIÓN -->
+          <p class="section-title"><i class="bi bi-tag me-1"></i>1. Identificación del Activo</p>
+          <div class="row g-2 mb-3">
+            <div class="col-12">{% include "corrosion/_field.html" with field=form.nombre_activo %}</div>
+            <div class="col-6">{% include "corrosion/_field.html" with field=form.caso_numero %}</div>
+            <div class="col-6">{% include "corrosion/_field.html" with field=form.ubicacion_obra %}</div>
+            <div class="col-6">{% include "corrosion/_field.html" with field=form.material %}</div>
+            <div class="col-6">{% include "corrosion/_field.html" with field=form.componente_eval %}</div>
+            <div class="col-6">{% include "corrosion/_field.html" with field=form.ambiente %}</div>
+            <div class="col-6">{% include "corrosion/_field.html" with field=form.exposicion %}</div>
+            <div class="col-6">{% include "corrosion/_field.html" with field=form.edad_equipo %}</div>
+            <div class="col-12">{% include "corrosion/_field.html" with field=form.evidencia_visual %}</div>
+            <div class="col-12">{% include "corrosion/_field.html" with field=form.mecanismo_probable %}</div>
+          </div>
+
+          <!-- 2. FACTORES AMBIENTALES -->
+          <p class="section-title"><i class="bi bi-cloud-rain me-1"></i>2. Severidad Ambiental — Factores Presentes</p>
+          <div class="mb-3">
+            <label class="form-label fw-semibold small">{{ form.factores_ambientales.label }}</label>
+            <div class="row g-1">
+              {% for checkbox in form.factores_ambientales %}
+              <div class="col-12">
+                <div class="form-check">
+                  {{ checkbox.tag }}
+                  <label class="form-check-label small" for="{{ checkbox.id_for_label }}">{{ checkbox.choice_label }}</label>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- 3. MORFOLOGÍA -->
+          <p class="section-title"><i class="bi bi-eye me-1"></i>3. Morfología del Daño Observada</p>
+          <div class="mb-3">
+            <div class="row g-1">
+              {% for checkbox in form.morfologias %}
+              <div class="col-12">
+                <div class="form-check">
+                  {{ checkbox.tag }}
+                  <label class="form-check-label small" for="{{ checkbox.id_for_label }}">{{ checkbox.choice_label }}</label>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- 4. UBICACIÓN DEL DAÑO -->
+          <p class="section-title"><i class="bi bi-geo-alt me-1"></i>4. Ubicación Característica del Daño</p>
+          <div class="mb-3">
+            <div class="row g-1">
+              {% for checkbox in form.ubicaciones_dano %}
+              <div class="col-12">
+                <div class="form-check">
+                  {{ checkbox.tag }}
+                  <label class="form-check-label small" for="{{ checkbox.id_for_label }}">{{ checkbox.choice_label }}</label>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- 5. CONDICIONES ACELERANTES -->
+          <p class="section-title"><i class="bi bi-lightning me-1"></i>5. Condiciones Acelerantes</p>
+          <div class="mb-3">
+            <div class="row g-1">
+              {% for checkbox in form.condiciones %}
+              <div class="col-12">
+                <div class="form-check">
+                  {{ checkbox.tag }}
+                  <label class="form-check-label small" for="{{ checkbox.id_for_label }}">{{ checkbox.choice_label }}</label>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- 6. DAÑO VISUAL -->
+          <p class="section-title"><i class="bi bi-camera me-1"></i>6. Evaluación Visual Global</p>
+          <div class="row g-2 mb-3">
+            <div class="col-12">{% include "corrosion/_field.html" with field=form.dano_visual %}</div>
+          </div>
+
+          <!-- 7. ESPESORES -->
+          <p class="section-title"><i class="bi bi-rulers me-1"></i>7. Espesores y Velocidad de Corrosión</p>
+          <div class="row g-2 mb-3">
+            <div class="col-4">{% include "corrosion/_field.html" with field=form.t_actual %}</div>
+            <div class="col-4">{% include "corrosion/_field.html" with field=form.t_minimo %}</div>
+            <div class="col-4">{% include "corrosion/_field.html" with field=form.cr %}</div>
+            <div class="col-12">
+              <div class="form-check">
+                {{ form.datos_estimados }}
+                <label class="form-check-label small" for="{{ form.datos_estimados.id_for_label }}">{{ form.datos_estimados.label }}</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- 8. INSPECCIÓN -->
+          <p class="section-title"><i class="bi bi-search me-1"></i>8. Calidad de la Inspección</p>
+          <div class="mb-3">{% include "corrosion/_field.html" with field=form.calidad_inspeccion %}</div>
+
+          <!-- 9. COF -->
+          <p class="section-title"><i class="bi bi-exclamation-octagon me-1"></i>9. Consecuencia de Falla (CoF)</p>
+          <div class="row g-2 mb-3">
+            <div class="col-6">{% include "corrosion/_field.html" with field=form.cof_seguridad %}</div>
+            <div class="col-6">{% include "corrosion/_field.html" with field=form.cof_ambiental %}</div>
+            <div class="col-6">{% include "corrosion/_field.html" with field=form.cof_operativo %}</div>
+            <div class="col-6">{% include "corrosion/_field.html" with field=form.cof_costo %}</div>
+          </div>
+
+          <!-- 10. DATOS OPCIONALES -->
+          <p class="section-title"><i class="bi bi-thermometer me-1"></i>10. Datos Medidos (Opcionales)</p>
+          <div class="row g-2 mb-3">
+            <div class="col-4">{% include "corrosion/_field.html" with field=form.ph_medio %}</div>
+            <div class="col-4">{% include "corrosion/_field.html" with field=form.temperatura_op %}</div>
+            <div class="col-4">{% include "corrosion/_field.html" with field=form.cloruros_ppm %}</div>
+            <div class="col-4">{% include "corrosion/_field.html" with field=form.velocidad_flujo %}</div>
+            <div class="col-4">{% include "corrosion/_field.html" with field=form.ecorr %}</div>
+            <div class="col-4">{% include "corrosion/_field.html" with field=form.resistividad %}</div>
+          </div>
+
+          <div class="mb-3">{% include "corrosion/_field.html" with field=form.observaciones %}</div>
+
+          <button type="submit" class="btn btn-primary btn-lg w-100">
+            <i class="bi bi-calculator me-2"></i>Calcular Evaluación
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- ===== RESULTADOS ===== -->
+  <div class="col-lg-6" id="resultados">
+    {% if resultado %}
+    {% with r=resultado %}
+
+    <!-- Encabezado del reporte -->
+    <div class="card shadow-sm border-0 mb-3 result-card risk-{{ r.riesgo.nivel|lower }}">
+      <div class="card-header card-header-tool">
+        <h5 class="mb-0"><i class="bi bi-file-earmark-text me-2"></i>Ficha de Diagnóstico — {{ r.caso_label }}</h5>
+        <small class="opacity-75">{{ r.form_data.nombre_activo }}</small>
+      </div>
+      <div class="card-body">
+        <div class="row g-2 small">
+          <div class="col-6"><strong>Componente:</strong> {{ r.form_data.componente_eval }}</div>
+          <div class="col-6"><strong>Material:</strong> {{ r.form_data.material }}</div>
+          <div class="col-6"><strong>Ambiente:</strong> {{ r.form_data.ambiente }}</div>
+          <div class="col-6"><strong>Exposición:</strong> {{ r.form_data.exposicion }}</div>
+          {% if r.form_data.ubicacion_obra %}<div class="col-12"><strong>Ubicación:</strong> {{ r.form_data.ubicacion_obra }}</div>{% endif %}
+          {% if r.form_data.edad_equipo %}<div class="col-6"><strong>Tiempo de servicio:</strong> {{ r.form_data.edad_equipo }} años</div>{% endif %}
+          {% if r.form_data.evidencia_visual %}<div class="col-12"><strong>Evidencia visual:</strong> {{ r.form_data.evidencia_visual }}</div>{% endif %}
+          {% if r.form_data.mecanismo_probable %}<div class="col-12"><strong>Mecanismo sospechoso (campo):</strong> {{ r.form_data.mecanismo_probable }}</div>{% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- 1. Severidad ambiental -->
+    <div class="card shadow-sm border-0 mb-3">
+      <div class="card-header fw-bold small bg-light py-2"><i class="bi bi-cloud-rain me-1"></i>Severidad Ambiental</div>
+      <div class="card-body py-2">
+        <div class="d-flex align-items-center gap-3">
+          <span class="fs-3 fw-bold text-primary">{{ r.severidad.nivel }}</span>
+          <div class="small text-muted">
+            Categoría ISO: <strong>{{ r.severidad.iso_categoria }}</strong><br>
+            Score: {{ r.severidad.score }} / {{ r.severidad.max_score }} ({{ r.severidad.porcentaje }}%)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Diagnóstico -->
+    <div class="card shadow-sm border-0 mb-3">
+      <div class="card-header fw-bold small bg-light py-2"><i class="bi bi-bug me-1"></i>Diagnóstico del Mecanismo</div>
+      <div class="card-body py-2">
+        <h6 class="text-primary">{{ r.diagnostico.nombre_principal }}</h6>
+        <div class="d-flex gap-2 mb-2">
+          <span class="badge bg-primary">Confianza: {{ r.diagnostico.confianza }} ({{ r.diagnostico.confianza_pct }}%)</span>
+        </div>
+        <p class="small mb-2">{{ r.diagnostico.justificacion }}</p>
+        {% if r.diagnostico.secundarios %}
+        <div class="small text-muted">
+          <strong>Secundarios:</strong>
+          {% for s in r.diagnostico.secundarios %}
+          <span class="badge bg-secondary me-1">{{ s.nombre }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- 3. Espesor y Vida Remanente -->
+    <div class="card shadow-sm border-0 mb-3">
+      <div class="card-header fw-bold small bg-light py-2"><i class="bi bi-rulers me-1"></i>Margen de Espesor y Vida Remanente</div>
+      <div class="card-body py-2">
+        {% if r.espesor.errores %}
+          {% for e in r.espesor.errores %}
+          <div class="alert alert-danger py-1 small">{{ e }}</div>
+          {% endfor %}
+        {% else %}
+        <div class="row g-2 text-center mb-2">
+          <div class="col-4">
+            <div class="border rounded p-2">
+              <div class="fs-4 fw-bold text-primary">{{ r.espesor.t_actual }} mm</div>
+              <div class="small text-muted">Espesor actual</div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="border rounded p-2">
+              <div class="fs-4 fw-bold text-danger">{{ r.espesor.t_minimo }} mm</div>
+              <div class="small text-muted">Espesor mínimo</div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="border rounded p-2">
+              <div class="fs-4 fw-bold {% if r.espesor.ME < 2 %}text-danger{% elif r.espesor.ME < 5 %}text-warning{% else %}text-success{% endif %}">
+                {{ r.espesor.ME }} mm
+              </div>
+              <div class="small text-muted">Margen (ME)</div>
+            </div>
+          </div>
+        </div>
+        <div class="row g-2 text-center mb-2">
+          <div class="col-6">
+            <div class="border rounded p-2">
+              <div class="fs-4 fw-bold {% if r.espesor.VR < 1 %}text-danger{% elif r.espesor.VR < 3 %}text-warning{% else %}text-success{% endif %}">
+                {{ r.espesor.VR }} años
+              </div>
+              <div class="small text-muted">Vida Remanente (VR)</div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="border rounded p-2">
+              <div class="fs-4 fw-bold text-info">{{ r.espesor.cr }} mm/año</div>
+              <div class="small text-muted">Velocidad de corrosión</div>
+            </div>
+          </div>
+        </div>
+        {% for adv in r.espesor.advertencias %}
+        <div class="alert alert-estimated py-1 small mb-1"><i class="bi bi-exclamation-triangle me-1"></i>{{ adv }}</div>
+        {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- 4. IF -->
+    <div class="card shadow-sm border-0 mb-3">
+      <div class="card-header fw-bold small bg-light py-2"><i class="bi bi-search me-1"></i>Factor de Inspección (IF)</div>
+      <div class="card-body py-2">
+        <div class="d-flex align-items-center gap-3">
+          <span class="fs-3 fw-bold text-info">IF = {{ r.inspeccion.IF }}</span>
+          <span class="small text-muted">{{ r.inspeccion.label }}</span>
+        </div>
+        {% if r.inspeccion.advertencia %}
+        <div class="alert alert-warning py-1 small mt-2 mb-0">IF alto por defecto — calidad de inspección no especificada.</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- 5. PoF & CoF -->
+    <div class="card shadow-sm border-0 mb-3">
+      <div class="card-header fw-bold small bg-light py-2"><i class="bi bi-bar-chart me-1"></i>PoF y CoF</div>
+      <div class="card-body py-2">
+        <div class="row g-3 text-center">
+          <div class="col-6">
+            <div class="border rounded p-3">
+              <div class="fs-1 fw-bold text-primary">{{ r.pof.PoF }}</div>
+              <span class="badge badge-pof">PoF — {{ r.pof.label }}</span>
+              <div class="small text-muted mt-1">Probabilidad de Falla</div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="border rounded p-3">
+              <div class="fs-1 fw-bold text-purple" style="color:#6c3483">{{ r.cof.CoF }}</div>
+              <span class="badge badge-cof">CoF — {{ r.cof.label }}</span>
+              <div class="small text-muted mt-1">Consecuencia de Falla</div>
+            </div>
+          </div>
+        </div>
+        <div class="small text-muted mt-2">
+          <strong>Detalle PoF:</strong>
+          Severidad={{ r.pof.detalle.severidad }}, Daño visual={{ r.pof.detalle.dano_visual }},
+          VR={{ r.pof.detalle.vr }}, ME={{ r.pof.detalle.me }},
+          Mecanismo={{ r.pof.detalle.mecanismo }}, IF={{ r.pof.detalle.if }} &rarr;
+          score raw={{ r.pof.detalle.raw }}
+        </div>
+        <div class="small text-muted">
+          <strong>Detalle CoF:</strong>
+          Seguridad={{ r.cof.detalle.seguridad }}, Ambiental={{ r.cof.detalle.ambiental }},
+          Operativo={{ r.cof.detalle.operativo }}, Costo={{ r.cof.detalle.costo }}
+          (criterio: máximo entre categorías)
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Riesgo y Matriz -->
+    <div class="card shadow-sm border-0 mb-3 result-card risk-{{ r.riesgo.nivel|lower }}">
+      <div class="card-header fw-bold small bg-light py-2"><i class="bi bi-grid-3x3-gap me-1"></i>Riesgo RBI y Matriz de Criticidad</div>
+      <div class="card-body py-2">
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <span class="fs-2 fw-bold
+            {% if r.riesgo.nivel == 'Crítico' %}text-danger
+            {% elif r.riesgo.nivel == 'Alto' %}text-orange
+            {% elif r.riesgo.nivel == 'Medio' %}text-warning
+            {% else %}text-success{% endif %}">
+            Riesgo = {{ r.riesgo.riesgo }}
+          </span>
+          <span class="badge fs-6
+            {% if r.riesgo.nivel == 'Crítico' %}bg-danger
+            {% elif r.riesgo.nivel == 'Alto' %}bg-orange
+            {% elif r.riesgo.nivel == 'Medio' %}bg-warning text-dark
+            {% else %}bg-success{% endif %}">
+            {{ r.riesgo.nivel }}
+          </span>
+          <span class="small text-muted">PoF {{ r.riesgo.pof }} × CoF {{ r.riesgo.cof }}</span>
+        </div>
+
+        <!-- Matriz 5x5 -->
+        <div class="overflow-auto">
+          <table class="table table-bordered table-sm mb-1" style="width:auto">
+            <thead class="table-light">
+              <tr>
+                <th class="small text-center" style="width:60px">PoF \ CoF</th>
+                <th class="small text-center">1</th>
+                <th class="small text-center">2</th>
+                <th class="small text-center">3</th>
+                <th class="small text-center">4</th>
+                <th class="small text-center">5</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for fila in r.matriz %}
+              <tr>
+                <th class="small text-center table-light">{{ fila.pof }}</th>
+                {% for celda in fila.celdas %}
+                <td class="matrix-cell {{ celda.clase }} {% if celda.es_actual %}matrix-current{% endif %}">
+                  {{ celda.valor }}{% if celda.es_actual %} ★{% endif %}
+                </td>
+                {% endfor %}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="d-flex gap-2 flex-wrap mt-1 small">
+          <span class="badge bg-success">1–4 Bajo</span>
+          <span class="badge bg-warning text-dark">5–9 Medio</span>
+          <span class="badge bg-orange">10–16 Alto</span>
+          <span class="badge bg-danger">17–25 Crítico</span>
+          <span class="text-muted">★ = posición actual</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. Mitigación -->
+    {% if r.diagnostico.mitigacion %}
+    <div class="card shadow-sm border-0 mb-3">
+      <div class="card-header fw-bold small bg-light py-2"><i class="bi bi-shield me-1"></i>Medidas de Mitigación — Mecanismo Detectado</div>
+      <div class="card-body py-2">
+        <ul class="mb-0 small">
+          {% for m in r.diagnostico.mitigacion %}<li>{{ m }}</li>{% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- 8. Conclusión -->
+    <div class="card shadow-sm border-0 mb-3">
+      <div class="card-header fw-bold small bg-light py-2"><i class="bi bi-file-text me-1"></i>Conclusión Técnica</div>
+      <div class="card-body py-2">
+        <p class="small mb-0">{{ r.conclusion }}</p>
+      </div>
+    </div>
+
+    <!-- 9. Acciones de mantenimiento -->
+    <div class="card shadow-sm border-0 mb-3">
+      <div class="card-header fw-bold small bg-light py-2"><i class="bi bi-tools me-1"></i>Acciones de Mantenimiento Recomendadas</div>
+      <div class="card-body py-2">
+        <ol class="mb-0 small">
+          {% for accion in r.acciones %}<li>{{ accion }}</li>{% endfor %}
+        </ol>
+      </div>
+    </div>
+
+    <!-- Botón imprimir -->
+    <div class="d-flex gap-2 no-print mb-4">
+      <button onclick="window.print()" class="btn btn-outline-secondary">
+        <i class="bi bi-printer me-1"></i>Imprimir / Guardar PDF
+      </button>
+      <a href="{% url 'corrosion:evaluar' %}" class="btn btn-outline-primary">
+        <i class="bi bi-arrow-repeat me-1"></i>Nueva Evaluación
+      </a>
+    </div>
+
+    {% endwith %}
+    {% else %}
+    <div class="card shadow-sm border-0">
+      <div class="card-body text-center py-5 text-muted">
+        <i class="bi bi-arrow-left-circle fs-1 mb-3 d-block"></i>
+        <p>Complete el formulario y presione <strong>Calcular Evaluación</strong> para ver los resultados aquí.</p>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

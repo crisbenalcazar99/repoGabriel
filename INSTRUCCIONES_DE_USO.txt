@@ -1,0 +1,159 @@
+=========================================================
+ ESTIMADOR DE SEVERIDAD AMBIENTAL, DIAGNÓSTICO,
+ VIDA REMANENTE Y RIESGO POR CORROSIÓN
+ Maestría en Mantenimiento Industrial — Taller de Corrosión
+=========================================================
+
+REQUISITOS PREVIOS
+------------------
+- Python 3.9 o superior instalado (https://www.python.org)
+- Conexión a Internet para la primera ejecución (Bootstrap/Bootstrap Icons
+  se cargan desde CDN). Sin Internet, la interfaz funciona pero sin estilos.
+- Sistema operativo: Windows, macOS o Linux.
+
+PASO 1 — ABRIR LA CARPETA DEL PROYECTO
+---------------------------------------
+Abrir una terminal (cmd, PowerShell, Terminal de macOS o Linux) y navegar
+a la carpeta del proyecto:
+
+  cd ruta/hasta/ProyectoMaestria
+
+PASO 2 — CREAR Y ACTIVAR EL ENTORNO VIRTUAL (solo la primera vez)
+-------------------------------------------------------------------
+Windows:
+  python -m venv .venv
+  .venv\Scripts\activate
+
+macOS / Linux:
+  python3 -m venv .venv
+  source .venv/bin/activate
+
+PASO 3 — INSTALAR DEPENDENCIAS (solo la primera vez)
+-----------------------------------------------------
+Con el entorno activo:
+  pip install django
+
+El proyecto usa únicamente Django 4.x y la biblioteca estándar de Python.
+No requiere otras instalaciones.
+
+PASO 4 — INICIALIZAR LA BASE DE DATOS (solo la primera vez)
+------------------------------------------------------------
+  python manage.py migrate
+
+PASO 5 — INICIAR EL SERVIDOR LOCAL
+------------------------------------
+  python manage.py runserver
+
+PASO 6 — ABRIR LA HERRAMIENTA EN EL NAVEGADOR
+-----------------------------------------------
+Abrir cualquier navegador web (Chrome, Firefox, Edge) e ir a:
+
+  http://127.0.0.1:8000
+
+PASO 7 — USAR LA HERRAMIENTA
+------------------------------
+En la página de inicio encontrará:
+  a) Botón "Iniciar Evaluación" — abre el formulario en blanco.
+  b) Botón "Cargar Caso 1" — pre-llena Grúa Torre 1 (datos reales).
+  c) Botón "Cargar Caso 2" — pre-llena Grúa Torre 4 (datos reales).
+
+PASO 8 — LLENAR EL FORMULARIO
+-------------------------------
+El formulario está dividido en 10 secciones:
+
+  1. Identificación del Activo
+     - Nombre, número de caso, componente, material, ambiente, exposición.
+
+  2. Severidad Ambiental — Factores Presentes
+     - Marque todos los factores que apliquen al entorno del activo.
+     - Mientras más factores activos, mayor la severidad calculada.
+
+  3. Morfología del Daño
+     - Seleccione los tipos de daño observados visualmente.
+     - Afecta directamente el diagnóstico del mecanismo.
+
+  4. Ubicación del Daño
+     - Indique dónde se concentra el ataque.
+
+  5. Condiciones Acelerantes
+     - Marque las condiciones de proceso o ambiente que aceleran la corrosión.
+
+  6. Evaluación Visual Global
+     - Seleccione el estado general del daño observado.
+
+  7. Espesores y Velocidad de Corrosión
+     - t_actual: espesor medido (mm). Si no hay medición, ingrese estimado.
+     - t_mínimo: espesor mínimo permitido por diseño o norma (mm).
+     - CR: velocidad de corrosión en mm/año.
+     - Si los datos son estimados, marque la casilla correspondiente.
+       La herramienta mostrará automáticamente la advertencia:
+       "Resultado PRELIMINAR — requiere medición por ultrasonido."
+
+  8. Calidad de la Inspección
+     - Seleccione el tipo de inspección realizada. Determina el IF.
+
+  9. Consecuencia de Falla (CoF)
+     - Evalúe Seguridad, Ambiente, Operativo y Costo de forma independiente.
+     - El CoF final es el máximo entre las cuatro categorías (criterio conservador).
+
+  10. Datos Medidos Opcionales
+      - pH, temperatura, cloruros, velocidad de flujo, etc.
+      - Son informativos y no afectan el cálculo, pero se incluyen en la ficha.
+
+PASO 9 — CALCULAR Y LEER RESULTADOS
+-------------------------------------
+Presionar el botón "Calcular Evaluación".
+
+Los resultados aparecen en la columna derecha e incluyen:
+  ✔ Severidad ambiental con categoría ISO 9223
+  ✔ Diagnóstico del mecanismo principal y secundarios
+  ✔ Margen de espesor (ME) y Vida Remanente (VR) en años
+  ✔ Factor de Inspección (IF)
+  ✔ Probabilidad de Falla (PoF) en escala 1-5
+  ✔ Consecuencia de Falla (CoF) en escala 1-5
+  ✔ Riesgo RBI = PoF × CoF con nivel Bajo/Medio/Alto/Crítico
+  ✔ Matriz de riesgo 5×5 con la posición actual marcada (★)
+  ✔ Medidas de mitigación específicas al mecanismo detectado
+  ✔ Conclusión técnica automática
+  ✔ Lista de acciones de mantenimiento recomendadas
+
+PASO 10 — IMPRIMIR O GUARDAR LA FICHA
+---------------------------------------
+Presionar el botón "Imprimir / Guardar PDF" en la parte inferior
+de los resultados. El navegador abrirá el diálogo de impresión.
+Para guardar como PDF: seleccionar "Guardar como PDF" en el destino.
+Los controles del formulario no se imprimen (solo la ficha de resultados).
+
+EVALUACIÓN DE DOS CASOS
+-------------------------
+Para evaluar ambos casos:
+  - Desde la página de inicio, presionar "Cargar Caso 1", revisar los datos
+    precargados, ajustar si es necesario, presionar "Calcular" e imprimir.
+  - Regresar al inicio, presionar "Cargar Caso 2" y repetir el proceso.
+
+ADVERTENCIAS IMPORTANTES
+--------------------------
+• La herramienta es de uso académico y preliminar.
+• Los resultados NO reemplazan una inspección especializada
+  ni el criterio de un ingeniero de integridad certificado.
+• Cuando los espesores son estimados, la vida remanente es orientativa.
+  Se requiere medición por ultrasonido (UT) para confirmar.
+• Para grúas torre, la consecuencia de falla (CoF) debe ser Alta o Muy Alta
+  si el daño afecta elementos estructurales principales (pie de empotramiento,
+  placas, pernos, uniones). Ajuste los valores de CoF según criterio técnico.
+• Si la vida remanente es < 1 año, la herramienta emite alerta crítica.
+  En ese caso: detener operación y realizar evaluación estructural inmediata.
+
+DETENER EL SERVIDOR
+---------------------
+En la terminal donde corre el servidor, presionar:
+  Ctrl + C
+
+SOPORTE TÉCNICO
+----------------
+Esta herramienta fue desarrollada como actividad grupal del taller de
+Corrosión de la Maestría en Mantenimiento Industrial.
+Bases técnicas: ISO 9223/9226, API 581 RBI, NACE SP0169, NACE RP0285,
+ASTM G57, SSPC/ISO 8501.
+
+=========================================================

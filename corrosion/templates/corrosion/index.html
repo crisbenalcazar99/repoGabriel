@@ -1,0 +1,75 @@
+{% extends "corrosion/base.html" %}
+{% block title %}Inicio — Estimador de Corrosión{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-header card-header-tool py-3">
+        <h1 class="h4 mb-1"><i class="bi bi-activity me-2"></i>Estimador de Severidad Ambiental, Diagnóstico, Vida Remanente y Riesgo por Corrosión</h1>
+        <p class="mb-0 opacity-75 small">Maestría en Mantenimiento Industrial — Actividad Grupal</p>
+      </div>
+      <div class="card-body">
+        <p class="lead">Herramienta interactiva para evaluar el estado de corrosión de activos industriales con base en los parámetros de la norma <strong>ISO 9223</strong> y la metodología <strong>API 581 / RBI</strong>.</p>
+        <hr>
+        <h5 class="section-title">¿Qué calcula esta herramienta?</h5>
+        <div class="row g-3 mb-4">
+          {% for item in features %}
+          <div class="col-md-6">
+            <div class="d-flex gap-2 align-items-start">
+              <i class="bi bi-check-circle-fill text-primary mt-1"></i>
+              <span>{{ item }}</span>
+            </div>
+          </div>
+          {% endfor %}
+          <div class="col-md-6"><div class="d-flex gap-2 align-items-start"><i class="bi bi-check-circle-fill text-primary mt-1"></i><span>Identificación del activo y componente</span></div></div>
+          <div class="col-md-6"><div class="d-flex gap-2 align-items-start"><i class="bi bi-check-circle-fill text-primary mt-1"></i><span>Severidad ambiental (ISO 9223 C1–CX)</span></div></div>
+          <div class="col-md-6"><div class="d-flex gap-2 align-items-start"><i class="bi bi-check-circle-fill text-primary mt-1"></i><span>Diagnóstico del mecanismo de corrosión</span></div></div>
+          <div class="col-md-6"><div class="d-flex gap-2 align-items-start"><i class="bi bi-check-circle-fill text-primary mt-1"></i><span>Margen de espesor (ME) y Vida Remanente (VR)</span></div></div>
+          <div class="col-md-6"><div class="d-flex gap-2 align-items-start"><i class="bi bi-check-circle-fill text-primary mt-1"></i><span>Factor de Inspección (IF)</span></div></div>
+          <div class="col-md-6"><div class="d-flex gap-2 align-items-start"><i class="bi bi-check-circle-fill text-primary mt-1"></i><span>Probabilidad de Falla (PoF 1–5)</span></div></div>
+          <div class="col-md-6"><div class="d-flex gap-2 align-items-start"><i class="bi bi-check-circle-fill text-primary mt-1"></i><span>Consecuencia de Falla (CoF 1–5)</span></div></div>
+          <div class="col-md-6"><div class="d-flex gap-2 align-items-start"><i class="bi bi-check-circle-fill text-primary mt-1"></i><span>Matriz de Riesgo 5×5 con colores</span></div></div>
+          <div class="col-md-6"><div class="d-flex gap-2 align-items-start"><i class="bi bi-check-circle-fill text-primary mt-1"></i><span>Conclusión técnica y acciones de mantenimiento</span></div></div>
+        </div>
+        <div class="alert alert-warning d-flex gap-2">
+          <i class="bi bi-exclamation-triangle-fill mt-1"></i>
+          <div><strong>Nota:</strong> Esta herramienta es de carácter académico y preliminar. Los resultados no reemplazan una inspección especializada ni el criterio de un ingeniero de integridad certificado.</div>
+        </div>
+        <a href="{% url 'corrosion:evaluar' %}" class="btn btn-primary btn-lg px-5">
+          <i class="bi bi-play-circle me-2"></i>Iniciar Evaluación
+        </a>
+      </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+      <div class="card-body">
+        <h5 class="section-title">Casos disponibles para evaluación</h5>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="card h-100 border-primary">
+              <div class="card-body">
+                <h6 class="card-title text-primary"><i class="bi bi-building me-1"></i>Caso 1 — Grúa Torre 1</h6>
+                <p class="card-text small">Pie de empotramiento y estructura inferior. Corrosión visible principalmente en los primeros 15 m de altura. Ambiente urbano-marino, Guayaquil.</p>
+                <a href="{% url 'corrosion:cargar_caso' 1 %}" class="btn btn-sm btn-primary mt-2">
+                  <i class="bi bi-lightning-charge me-1"></i>Cargar Caso 1
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card h-100 border-secondary">
+              <div class="card-body">
+                <h6 class="card-title text-secondary"><i class="bi bi-building me-1"></i>Caso 2 — Grúa Torre 4</h6>
+                <p class="card-text small">Pie de empotramiento, base, pernos, pasadores, placas y perfiles. Pintura amarilla deteriorada, óxido avanzado en uniones y bordes.</p>
+                <a href="{% url 'corrosion:cargar_caso' 2 %}" class="btn btn-sm btn-secondary mt-2">
+                  <i class="bi bi-lightning-charge me-1"></i>Cargar Caso 2
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
